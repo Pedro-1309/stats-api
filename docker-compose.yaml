@@ -2,12 +2,12 @@ services:
   # the actual db
   mongo:
     image: mongo
-    container_name: lobby-mongodb-container
+    container_name: stats-mongodb-container
     restart: always
     volumes:
       - ./import:/docker-entrypoint-initdb.d:ro
     networks:
-      - lobby-internal-net
+      - stats-internal-net
 
   # the management interface to the db 
   mongo-express:
@@ -17,29 +17,29 @@ services:
     restart: always
     ports:
       # for development purposes only
-      - 8081:8081
+      - 8083:8081
     networks:
-      - lobby-internal-net 
+      - stats-internal-net 
     environment:
-      ME_CONFIG_MONGODB_SERVER: lobby-mongodb-container
+      ME_CONFIG_MONGODB_SERVER: stats-mongodb-container
       # TODO: use auth to access this or remove entirely on deploy
       ME_CONFIG_BASICAUTH: false
 
   # the api built on top of the db
   frontend:
     build: .
-    container_name: lobby-api
+    container_name: stats-api
     depends_on:
       - mongo
     ports:
       - ${PORT}:${PORT}
     networks:
-      - lobby-internal-net
+      - stats-internal-net
       - town-of-saviom-shared-net
     environment:
       # mongodb-container -> nome container del db
-      # lobby -> nome del db
-      - MONGO_URI=mongodb://lobby-mongodb-container:27017/lobby
+      # stats -> nome del db
+      - MONGO_URI=mongodb://stats-mongodb-container:27017/stats
       # production or debug
       - NODE_ENV=debug
       # auth-service container url
@@ -47,7 +47,7 @@ services:
       - PORT=${PORT}
 
 networks:
-  lobby-internal-net:
+  stats-internal-net:
     driver: bridge
   town-of-saviom-shared-net:
     external: true

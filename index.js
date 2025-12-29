@@ -12,9 +12,9 @@ const authorizationMiddleware = require('./src/middlewares/authorizationMiddlewa
 const { roomSocket } = require('./src/socket/roomSocket');
 
 // env variables
-const connectionString = process.env.MONGO_URI || 'mongodb://localhost:27017/lobby';
+const connectionString = process.env.MONGO_URI || 'mongodb://localhost:27017/stats';
 const isDebug = process.env.NODE_ENV == 'debug';
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 // Swagger setup
 const swaggerDocument = yaml.load(path.join(__dirname, './docs/swagger.yaml'));

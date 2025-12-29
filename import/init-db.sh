@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DB_NAME="lobby"
-DB_COLLECTION="rooms"
+DB_NAME="stats"
+DB_COLLECTION="results"
 
 echo "Importing databases"
 
