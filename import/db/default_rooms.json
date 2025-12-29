@@ -1,44 +1,42 @@
 {
-    "code": "567CD",
-    "name": "pippo room",
-    "gameMode": "classic",
-    "players": [
+  "userId": "user_11223_new",
+  "totalGames": 1,
+  "totalWins": 0,
+  "history": [
     {
-      "userId": "694aa74d8c5076c9f3c2cd2c",
-      "name": "Marco_Dev",
-      "imageUrl": "werewolf.png",
-      "isHost": true,
-      "isReady": true
+      "result": "lost",
+      "role": "wolf",
+      "numbOfPlayers": 4,
+      "gameMode": "classic",
+      "playedAt": "2023-10-27T16:45:00.000Z"
     }
-  ],
-  "roomCapacity": 8
+  ]
 }
 {
-    "code": "AB234",
-    "name": "Stanza numero 2",
-    "gameMode": "advanced",
-    "players": [
+  "userId": "user_88921_pro",
+  "totalGames": 100,
+  "totalWins": 60,
+  "history": [
     {
-      "userId": "712aa74d8c5076c9f3c2cd2c",
-      "name": "Sara_Skill",
-      "imageUrl": null,
-      "isHost": true,
-      "isReady": true
+      "result": "won",
+      "role": "citizen",
+      "numbOfPlayers": 10,
+      "gameMode": "advanced",
+      "playedAt": "2023-10-27T14:30:00.000Z"
     },
     {
-      "userId": "de71274d8c5076c9f3c2cd2c",
-      "name": "Luca_99",
-      "imageUrl": "werewolf.png",
-      "isHost": false,
-      "isReady": true
+      "result": "lost",
+      "role": "wolf",
+      "numbOfPlayers": 10,
+      "gameMode": "advanced",
+      "playedAt": "2023-10-27T13:15:00.000Z"
     },
     {
-      "userId": "694aa74d8c5076c9f3c2cd2d",
-      "name": "Player_Guest",
-      "imageUrl": null,
-      "isHost": false,
-      "isReady": false
+      "result": "won",
+      "role": "citizen",
+      "numbOfPlayers": 6,
+      "gameMode": "classic",
+      "playedAt": "2023-10-26T21:00:00.000Z"
     }
-  ],
-    "roomCapacity": 6
+  ]
 }
