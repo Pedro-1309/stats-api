@@ -3,8 +3,11 @@ const router = express.Router();
 const controller = require('../controllers/statsController');
 
 /*
-router.route('/rooms')
-    .post(controller.listRooms);
+router.route('/stats')
+    .post(controller.listStats);
 */
+
+router.route('/result')
+    .post(controller.addResult)
 
 module.exports = router;

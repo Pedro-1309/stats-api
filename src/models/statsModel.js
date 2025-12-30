@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const statsSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
+    _id: { type: String, required: true },
     totalGames: { type: Number, default: 0 },
     totalWins: { type: Number, default: 0 },
     // Array delle ultime 10 partite
@@ -37,5 +37,5 @@ statsSchema.virtual('winRate').get(function() {
     return `${percentage.toFixed(2)}%`;
 });
 
-const statsModel = mongoose.model('Stats', statsSchema)
+const statsModel = mongoose.model('results', statsSchema)
 module.exports = { statsModel }

@@ -6,125 +6,101 @@ info:
   description: API for managing game statistics, win rates, and match history for players.
       
 paths:
-  /stats/{userId}:
-    get:
-      summary: Get player global statistics
-      description: Returns total games, wins, losses, and calculated win rate for a specific user.
-      tags: [Statistics]
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-          description: The unique ID of the user.
-      responses:
-        200:
-          description: Statistics retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  totalGames: { type: integer, example: 50 }
-                  totalWins: { type: integer, example: 30 }
-                  totalLosses: { type: integer, example: 20 }
-                  winRate: { type: string, example: "60.00%" }
-        404:
-          description: User not found.
-        500:
-          description: Server error.
-
+  # -------------------------
+  # PUBLIC ROUTES
+  # -------------------------
+  /result:
     post:
-      summary: Initialize stats for a new player
-      description: Creates a new stats record for a player who hasn't played before.
-      tags: [Statistics]
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-      responses:
-        201:
-          description: Stats record created successfully.
-        400:
-          description: User already exists.
-        500:
-          description: Server error.
-
-    put:
-      summary: Add a new match result
-      description: Updates total counters and adds the match to the history (keeping only the last 10).
-      tags: [Statistics]
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      summary: Add game results
+      tags:
+        - Public
+      description: Bulk update or create statistics for players. New games are added to the top of the history (max 10).
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MatchUpdate'
+              type: array
+              items:
+                $ref: '#/components/schemas/GameResultInput'
       responses:
-        200:
-          description: Result added and stats updated.
-        404:
+        '200':
+          description: List of updated player documents.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatsDocument'
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  # -------------------------
+  # PROTECTED ROUTES
+  # -------------------------
+  /stats:
+    get:
+      summary: Get user's global stats
+      tags:
+        - Protected
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Returns global counters and virtuals (winRate, etc).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalStats'
+        '400':
+          description: Missing ID in authentication.
+        '404':
           description: User not found.
-        500:
+        '500':
           description: Server error.
 
     delete:
-      summary: Remove player statistics
-      description: Permanently deletes all stats and history for the specified user.
-      tags: [Statistics]
+      summary: Remove user's stats
+      tags:
+        - Protected
       security:
         - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
       responses:
-        200:
+        '200':
           description: Stats removed successfully.
-        404:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Stats removed successfully
+        '404':
           description: User not found.
 
-  /stats/history/{userId}:
+  /history:
     get:
-      summary: Get match history
-      description: Returns an array of the last 10 matches played by the user.
-      tags: [History]
+      summary: Get user's match history
+      tags:
+        - Protected
       security:
         - bearerAuth: []
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      description: Returns the last 10 games played by the user.
       responses:
-        200:
-          description: A list of the most recent matches.
+        '200':
+          description: Array of match history entries.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/HistoryEntry'
-        404:
-          description: History not found.
+        '404':
+          description: User not found.
 
 components:
   # -------------------------
@@ -140,32 +116,95 @@ components:
   # DATA SCHEMAS
   # -------------------------
   schemas:
-    MatchUpdate:
+    # Input for adding results
+    GameResultInput:
       type: object
       required:
+        - _id
         - result
         - role
         - numbOfPlayers
         - gameMode
       properties:
+        _id:
+          type: string
+          description: The player's unique identifier.
         result:
           type: string
           enum: [won, lost]
+          example: "won"
         role:
           type: string
-          example: "Archer"
+          example: "wolf"
+        numbOfPlayers:
+          type: integer
+          example: 6
+        gameMode:
+          type: string
+          enum: [classic, advanced]
+          example: "classic"
+
+    # Global statistics (includes virtuals)
+    GlobalStats:
+      type: object
+      properties:
+        totalGames:
+          type: integer
+          example: 50
+        totalWins:
+          type: integer
+          example: 30
+        totalLosses:
+          type: integer
+          example: 20
+        winRate:
+          type: string
+          example: "60.00%"
+
+    # Individual match history entry
+    HistoryEntry:
+      type: object
+      properties:
+        result:
+          type: string
+          enum: [won, lost]
+          example: "lost"
+        role:
+          type: string
+          example: "citizen"
         numbOfPlayers:
           type: integer
           example: 8
         gameMode:
           type: string
           enum: [classic, advanced]
+          example: "advanced"
+        playedAt:
+          type: string
+          format: date-time
+          example: "2023-10-27T10:00:00Z"
 
-    HistoryEntry:
+    # Full database document
+    StatsDocument:
       type: object
       properties:
-        result: { type: string, enum: [won, lost] }
-        role: { type: string }
-        numbOfPlayers: { type: integer }
-        gameMode: { type: string, enum: [classic, advanced] }
-        playedAt: { type: string, format: date-time }
+        _id:
+          type: string
+        totalGames:
+          type: integer
+          example: 1
+        totalWins:
+          type: integer
+          example: 1
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryEntry'
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string

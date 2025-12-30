@@ -1,9 +1,53 @@
 const { statsModel } = require('../models/statsModel');
 
-exports.getStats = (req, res) => {
-    const { userId } = req.params;
+exports.addResult = (req, res) => {
+    const results = req.body;
+    const updatePromises = results.map(data => {
+        const isWin = data.result === 'won' ? 1 : 0;
 
-    statsModel.findOne({ userId })
+        return statsModel.findOneAndUpdate(
+            { _id: data._id },
+            {
+                $inc: { 
+                    totalGames: 1, 
+                    totalWins: isWin 
+                },
+                $push: {
+                    history: {
+                        $each: [{
+                            result: data.result,
+                            role: data.role,
+                            numbOfPlayers: data.numbOfPlayers,
+                            gameMode: data.gameMode,
+                            playedAt: new Date()
+                        }],
+                        $position: 0,
+                        $slice: 10
+                    }
+                }
+            },
+            { 
+                upsert: true, 
+                new: true, 
+                setDefaultsOnInsert: true 
+            }
+        );
+    });
+
+    Promise.all(updatePromises)
+        .then(updatedStats => {
+            res.status(200).json(updatedStats);
+        })
+        .catch(error => res.status(500).json({ error: error.message }));
+};
+
+exports.getStats = (req, res) => {
+    const userId = req.userInfo.id;
+    if (!userId) {
+        return res.status(400).json({ message: "ID missing in authentication info" });
+    }
+
+    statsModel.findOne({ _id: userId })
         .then(stats => {
             if (!stats) {
                 return res.status(404).json({ message: "User not found" });
@@ -18,55 +62,13 @@ exports.getStats = (req, res) => {
         .catch(error => res.status(500).json({ error: error.message }));
 };
 
-exports.addStat = (req, res) => {
-    const { userId } = req.params;
+exports.deleteStats = (req, res) => {
+    const userId = req.userInfo.id;
+    if (!userId) {
+        return res.status(400).json({ message: "ID missing in authentication info" });
+    }
 
-    statsModel.findOne({ userId })
-        .then(existing => {
-            if (existing) {
-                return res.status(400).json({ message: "User already exist" });
-            }
-            const newPlayerStats = new statsModel({ userId });
-            return newPlayerStats.save();
-        })
-        .then(savedStats => {
-            if (savedStats) res.status(201).json(savedStats);
-        })
-        .catch(error => res.status(500).json({ error: error.message }));
-};
-
-exports.addResult = (req, res) => {
-    const { userId } = req.params;
-    const { result, role, numbOfPlayers, gameMode } = req.body;
-    const isWin = result === 'won' ? 1 : 0;
-
-    statsModel.findOneAndUpdate(
-        { userId },
-        {
-            $inc: { totalGames: 1, totalWins: isWin },
-            $push: {
-                history: {
-                    $each: [{ result, role, numbOfPlayers, gameMode, playedAt: new Date() }],
-                    $position: 0, 
-                    $slice: 10    
-                }
-            }
-        },
-        { new: true, runValidators: true }
-    )
-    .then(updatedStats => {
-        if (!updatedStats) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.status(200).json(updatedStats);
-    })
-    .catch(error => res.status(500).json({ error: error.message }));
-};
-
-exports.removePlayer = (req, res) => {
-    const { userId } = req.params;
-
-    statsModel.findOneAndDelete({ userId })
+    statsModel.findOneAndDelete({ _id: userId })
         .then(deleted => {
             if (!deleted) {
                 return res.status(404).json({ message: "User not found" });
@@ -77,12 +79,15 @@ exports.removePlayer = (req, res) => {
 };
 
 exports.getHistory = (req, res) => {
-    const { userId } = req.params;
+    const userId = req.userInfo.id;
+    if (!userId) {
+        return res.status(400).json({ message: "ID missing in authentication info" });
+    }
 
-    statsModel.findOne({ userId }).select('history')
+    statsModel.findOne({ _id: userId })
         .then(stats => {
             if (!stats) {
-                return res.status(404).json({ message: "History not found" });
+                return res.status(404).json({ message: "User not found" });
             }
             res.status(200).json(stats.history);
         })
