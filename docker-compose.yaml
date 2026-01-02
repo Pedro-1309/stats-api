@@ -45,7 +45,7 @@ services:
       # auth-service container url
       - AUTH_SERVICE_URL=#{AUTH_SERVICE_URL}
       # origin url accepted by cors
-      - CORS_ORIGIN=http://localhost:517
+      - CORS_ORIGIN=http://localhost:5173
 
 networks:
   stats-internal-net:
