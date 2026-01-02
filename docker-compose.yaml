@@ -32,7 +32,7 @@ services:
     depends_on:
       - stats-mongo
     ports:
-      - ${STATS_API_PORT}:${STATS_API_PORT}
+      - ${STATS_API_PORT}:3000
     networks:
       - stats-internal-net
       - town-of-saviom-shared-net
