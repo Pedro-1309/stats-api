@@ -1,6 +1,6 @@
 services:
   # the actual db
-  mongo:
+  stats-mongo:
     image: mongo
     container_name: stats-mongodb-container
     restart: always
@@ -10,14 +10,14 @@ services:
       - stats-internal-net
 
   # the management interface to the db 
-  mongo-express:
+  stats-mongo-express:
     depends_on:
-      - mongo
+      - stats-mongo
     image: mongo-express
     restart: always
     ports:
       # for development purposes only
-      - 8083:8081
+      - ${STATS_DB_UI_PORT:-8081}:8081
     networks:
       - stats-internal-net 
     environment:
@@ -26,13 +26,13 @@ services:
       ME_CONFIG_BASICAUTH: false
 
   # the api built on top of the db
-  frontend:
+  stats-frontend:
     build: .
     container_name: stats-api
     depends_on:
-      - mongo
+      - stats-mongo
     ports:
-      - ${PORT}:${PORT}
+      - ${STATS_API_PORT}:${STATS_API_PORT}
     networks:
       - stats-internal-net
       - town-of-saviom-shared-net
@@ -43,8 +43,9 @@ services:
       # production or debug
       - NODE_ENV=debug
       # auth-service container url
-      - AUTH_SERVICE_URL=http://login-api:${LOGIN_API_PORT}
-      - PORT=${PORT}
+      - AUTH_SERVICE_URL=#{AUTH_SERVICE_URL}
+      # origin url accepted by cors
+      - CORS_ORIGIN=http://localhost:517
 
 networks:
   stats-internal-net:
