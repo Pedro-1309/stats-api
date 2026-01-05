@@ -10,6 +10,7 @@ const protectedRouter = require('./src/routes/protectedRouter');
 const publicRouter = require('./src/routes/publicRouter');
 const authorizationMiddleware = require('./src/middlewares/authorizationMiddleware');
 const { roomSocket } = require('./src/socket/roomSocket');
+const controller = require("./src/controllers/statsController");
 
 // env variables
 const connectionString = process.env.MONGO_URI || 'mongodb://localhost:27017/stats';
@@ -56,6 +57,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Public API routes
 app.use('/', publicRouter);
+
+// Internal API routes
+app.post('/result', authorizationMiddleware.internalAuthorize, controller.addResult)
 
 // Authorization middleware
 io.use(authorizationMiddleware.socketAuthorize);

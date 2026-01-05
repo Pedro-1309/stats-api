@@ -7,8 +7,6 @@ router.route('/stats')
     .post(controller.listStats);
 */
 
-router.route('/result')
-    .post(controller.addResult)
 
 router.route("/")
     .get((_, res) => {
