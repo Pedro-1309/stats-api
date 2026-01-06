@@ -2,7 +2,6 @@ services:
   # the actual db
   stats-mongo:
     image: mongo
-    container_name: stats-mongodb-container
     restart: always
     volumes:
       - ./import:/docker-entrypoint-initdb.d:ro
@@ -21,9 +20,10 @@ services:
     networks:
       - stats-internal-net 
     environment:
-      ME_CONFIG_MONGODB_SERVER: stats-mongodb-container
+      - ME_CONFIG_MONGODB_URL=mongodb://stats-mongo:27017/
+      - ME_CONFIG_MONGODB_SERVER=stats-mongo
       # TODO: use auth to access this or remove entirely on deploy
-      ME_CONFIG_BASICAUTH: false
+      - ME_CONFIG_BASICAUTH=false
 
   # the api built on top of the db
   stats-frontend:
@@ -39,7 +39,7 @@ services:
     environment:
       # mongodb-container -> nome container del db
       # stats -> nome del db
-      - MONGO_URI=mongodb://stats-mongodb-container:27017/stats
+      - MONGO_URI=mongodb://stats-mongo:27017/stats
       # production or debug
       - NODE_ENV=${NODE_ENV}
       # auth-service container url
