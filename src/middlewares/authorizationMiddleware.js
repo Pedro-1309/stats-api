@@ -1,4 +1,5 @@
 const {validateToken} = require('../services/authorizationService');
+const isDebug = process.env.NODE_ENV == 'debug';
 
 exports.authorize = async (req, res, next) => {
     const authHeader = req.headers['authorization']

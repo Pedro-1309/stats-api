@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const statsSchema = new mongoose.Schema({
-    _id: { type: String, required: true },
     totalGames: { type: Number, default: 0 },
     totalWins: { type: Number, default: 0 },
     // Array delle ultime 10 partite
