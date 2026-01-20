@@ -7,14 +7,17 @@ info:
       
 paths:
   # -------------------------
-  # PUBLIC ROUTES
+  # INTERNAL ROUTES
   # -------------------------
-  /result:
+  /results:
     post:
       summary: Add game results
       tags:
         - Public
-      description: Bulk update or create statistics for players. New games are added to the top of the history (max 10).
+      security:
+        - ServiceIdAuth: []
+          ServiceSecretAuth: []
+      description: Submit a game result
       requestBody:
         required: true
         content:
@@ -111,6 +114,14 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    ServiceIdAuth:
+      type: apiKey
+      in: header
+      name: x-internal-service-id
+    ServiceSecretAuth:
+      type: apiKey
+      in: header
+      name: x-internal-secret
 
   # -------------------------
   # DATA SCHEMAS

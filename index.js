@@ -59,7 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/', publicRouter);
 
 // Internal API routes
-app.post('/result', authorizationMiddleware.internalAuthorize, controller.addResult)
+app.post('/results', authorizationMiddleware.internalAuthorize, controller.addResult)
 
 // Authorization middleware
 io.use(authorizationMiddleware.socketAuthorize);
