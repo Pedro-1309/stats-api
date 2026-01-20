@@ -3,7 +3,7 @@ const { statsModel } = require('../models/statsModel');
 exports.addResult = (req, res) => {
     const results = req.body;
     const updatePromises = results.map(data => {
-        const isWin = data.result === 'won' ? 1 : 0;
+        const isWin = data.result === 'WON' ? 1 : 0;
 
         return statsModel.findOneAndUpdate(
             { _id: data._id },

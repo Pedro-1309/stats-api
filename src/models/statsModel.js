@@ -6,7 +6,7 @@ const statsSchema = new mongoose.Schema({
     // Array delle ultime 10 partite
     history: [{
         result: { type: String, 
-            enum: ['won', 'lost'], 
+            enum: ['WON', 'LOST'], 
             required: true
         },
         role: { type: String, required: true },
