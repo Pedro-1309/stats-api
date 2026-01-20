@@ -36,7 +36,7 @@ exports.addResult = (req, res) => {
 
     Promise.all(updatePromises)
         .then(updatedStats => {
-            res.status(200).json(updatedStats);
+            res.status(201).json(updatedStats);
         })
         .catch(error => res.status(500).json({ error: error.message }));
 };

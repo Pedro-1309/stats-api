@@ -27,7 +27,7 @@ paths:
               items:
                 $ref: '#/components/schemas/GameResultInput'
       responses:
-        '200':
+        '201':
           description: List of updated player documents.
           content:
             application/json:
