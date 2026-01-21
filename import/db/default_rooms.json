@@ -1,18 +1,18 @@
 {
   "_id": { "$oid": "000000000000000000000123" },
-  "totalGames": 1,
-  "totalWins": 0,
+  "totalGames": 2,
+  "totalWins": 1,
   "history": [
     {
-      "result": "lost",
-      "role": "wolf",
+      "result": "LOST",
+      "role": "WEREWOLF",
       "numbOfPlayers": 6,
       "gameMode": "classic",
       "playedAt": "2023-10-27T16:45:00.000Z"
     },
     {
-      "result": "won",
-      "role": "wolf",
+      "result": "WON",
+      "role": "WEREWOLF",
       "numbOfPlayers": 8,
       "gameMode": "classic",
       "playedAt": "2023-10-27T17:45:00.000Z"
@@ -25,22 +25,22 @@
   "totalWins": 2,
   "history": [
     {
-      "result": "won",
-      "role": "citizen",
+      "result": "WON",
+      "role": "VILLAGER",
       "numbOfPlayers": 10,
       "gameMode": "advanced",
       "playedAt": "2023-10-27T14:30:00.000Z"
     },
     {
-      "result": "lost",
-      "role": "wolf",
+      "result": "LOST",
+      "role": "WEREWOLF",
       "numbOfPlayers": 10,
       "gameMode": "advanced",
       "playedAt": "2023-10-27T13:15:00.000Z"
     },
     {
-      "result": "won",
-      "role": "citizen",
+      "result": "WON",
+      "role": "VILLAGER",
       "numbOfPlayers": 6,
       "gameMode": "classic",
       "playedAt": "2023-10-26T21:00:00.000Z"
@@ -53,36 +53,36 @@
   "totalWins": 4,
   "history": [
     {
-      "result": "won",
-      "role": "citizen",
+      "result": "WON",
+      "role": "VILLAGER",
       "numbOfPlayers": 10,
       "gameMode": "advanced",
       "playedAt": "2023-10-27T14:30:00.000Z"
     },
     {
-      "result": "lost",
-      "role": "wolf",
+      "result": "LOST",
+      "role": "WEREWOLF",
       "numbOfPlayers": 10,
       "gameMode": "advanced",
       "playedAt": "2023-10-27T13:15:00.000Z"
     },
     {
-      "result": "won",
-      "role": "citizen",
+      "result": "WON",
+      "role": "VILLAGER",
       "numbOfPlayers": 6,
       "gameMode": "classic",
       "playedAt": "2023-10-26T21:00:00.000Z"
     },
     {
-      "result": "won",
-      "role": "wolf",
+      "result": "WON",
+      "role": "WEREWOLF",
       "numbOfPlayers": 10,
       "gameMode": "advanced",
       "playedAt": "2023-10-28T13:15:00.000Z"
     },
     {
-      "result": "won",
-      "role": "citizen",
+      "result": "WON",
+      "role": "VILLAGER",
       "numbOfPlayers": 6,
       "gameMode": "classic",
       "playedAt": "2023-10-28T21:00:00.000Z"
