@@ -1,15 +1,12 @@
 const express = require('express');
-const http = require('http');
 const cors = require('cors');
 const yaml = require('yamljs');
 const path = require('path');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
-const { Server } = require("socket.io");
 const protectedRouter = require('./src/routes/protectedRouter');
 const publicRouter = require('./src/routes/publicRouter');
 const authorizationMiddleware = require('./src/middlewares/authorizationMiddleware');
-const { roomSocket } = require('./src/socket/roomSocket');
 const controller = require("./src/controllers/statsController");
 
 // env variables
@@ -37,13 +34,6 @@ app.use(express.static('public'));
 // Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Socket.io setup
-const httpServer = http.createServer(app);
-const io = new Server(httpServer, {
-    cors: corsOptions
-});
-app.set('io', io);
-
 // Debugging middleware
 if (isDebug) {
     app.use((req, _, next) => {
@@ -62,11 +52,7 @@ app.use('/', publicRouter);
 app.post('/results', authorizationMiddleware.internalAuthorize, controller.addResult)
 
 // Authorization middleware
-io.use(authorizationMiddleware.socketAuthorize);
 app.use(authorizationMiddleware.authorize);
-
-// Protected Socket.io handler
-io.on("connection", roomSocket);
 
 // Protected API routes
 app.use('/', protectedRouter);
