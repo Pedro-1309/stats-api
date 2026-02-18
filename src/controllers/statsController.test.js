@@ -24,7 +24,7 @@ describe('Stats Controller', () => {
     });
 
     describe('addResult', () => {
-        it('process an array of game results and return 201', async () => {
+        test('process an array of game results', async () => {
             mockReq.body = [
                 { _id: 'user_123', result: 'WON', role: 'VILLAGER', numbOfPlayers: 8, gameMode: 'classic' },
                 { _id: 'user_456', result: 'LOST', role: 'WEREWOLF', numbOfPlayers: 8, gameMode: 'classic' }
@@ -54,7 +54,7 @@ describe('Stats Controller', () => {
             expect(mockRes.status).toHaveBeenCalledWith(201);
         });
 
-        it('return 500 if a database update fails', async () => {
+        test('return 500 if a database update fails', async () => {
             mockReq.body = [{ _id: 'user_123', result: 'WON' }];
             
             statsModel.findOneAndUpdate.mockRejectedValue(new Error('Database Error'));
@@ -68,7 +68,7 @@ describe('Stats Controller', () => {
     });
 
     describe('getStats', () => {
-        it('return 400 if userInfo.id is missing', async () => {
+        test('check if userInfo.id is missing', async () => {
             mockReq.userInfo.id = undefined;
 
             await statsController.getStats(mockReq, mockRes);
@@ -78,7 +78,7 @@ describe('Stats Controller', () => {
             expect(statsModel.findOne).not.toHaveBeenCalled();
         });
 
-        it('return 404 if the user stats do not exist in the database', async () => {
+        test('check if the user stats do not exist in the database', async () => {
             statsModel.findOne.mockResolvedValue(null);
 
             await statsController.getStats(mockReq, mockRes);
@@ -88,7 +88,7 @@ describe('Stats Controller', () => {
             expect(mockRes.send).toHaveBeenCalledWith("User not found");
         });
 
-        it('return 200 and the stats successfully', async () => {
+        test('get player stats successfully', async () => {
             const mockDbStats = {
                 totalGames: 10,
                 totalWins: 6,
